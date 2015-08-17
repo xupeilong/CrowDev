@@ -11,6 +11,10 @@ import javax.persistence.Table;
 @Table(name = "source_file")
 public class SourceFile {
 
+	public static final int TYPE_INTERFACE = 0;
+	public static final int TYPE_WORK_CLASS = 1;
+	public static final int TYPE_TEST_CASE = 2;
+	
 	@Id
 	@GeneratedValue
 	private int id;
@@ -25,19 +29,19 @@ public class SourceFile {
 	
 	private int type;
 	
-	
 	public SourceFile() {
 	}
 	
 	
 
 
-	public SourceFile(int work_context_id, String name, String srcPath, String filePath) {
+	public SourceFile(int work_context_id, String name, String srcPath, String filePath, int type) {
 		super();
 		this.work_context_id = work_context_id;
 		this.name = name;
 		this.srcPath = srcPath;
 		this.filePath = filePath;
+		this.type = type;
 	}
 
 

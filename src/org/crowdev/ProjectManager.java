@@ -18,6 +18,11 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 public class ProjectManager {
+	
+	public void loadWorkProject(File projectPath)
+	{
+		
+	}
 
 	public void loadArchProject(File projectPath)
 	{

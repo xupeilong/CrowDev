@@ -31,12 +31,20 @@ public class ConfigXMLParser {
 		scanner = new ProjectScanner(projectPath);
 		configFile = scanner.getConfigFile();
 		System.out.println("configFile = " + configFile.getPath());
-		parseConfigFile();
+		parseArchConfigFile();
 	}
 	
-	private void parseSourceFile(WorkContext workContext, Element element, String type)
+	private void parseSourceFile(WorkContext workContext, Element element, int type)
 	{
-		List interfaces = element.elements(type);
+		String typeString = null;
+		if (type == SourceFile.TYPE_INTERFACE)
+			typeString = "Interface";
+		else if (type == SourceFile.TYPE_WORK_CLASS)
+			typeString = "Class";
+		else if (type == SourceFile.TYPE_TEST_CASE)
+			typeString = "TestCase";
+			
+		List interfaces = element.elements(typeString);
 		for(Iterator it=interfaces.iterator();it.hasNext();){       
 	        Element e = (Element) it.next();
 	        Attribute srcAttr = e.attribute("src");
@@ -46,7 +54,7 @@ public class ConfigXMLParser {
 	        File file = scanner.getFileBySrcPath(srcString);
 	        SourceFileDAO sourceFileDAO = new SourceFileDAO();
 	        sourceFileDAO.saveSourceFile(new SourceFile(workContext.getId(), file.getName(),
-	        		srcString, file.getPath()));
+	        		srcString, file.getPath(), type));
 		} 
 	}
 	
@@ -61,9 +69,9 @@ public class ConfigXMLParser {
 		WorkContextDAO workContextDAO = new WorkContextDAO();
 		workContextDAO.saveWorkContext(workContext);
 		
-		parseSourceFile(workContext, element, "Interface");
-		parseSourceFile(workContext, element, "Class");
-		parseSourceFile(workContext, element, "TestCase");
+		parseSourceFile(workContext, element, SourceFile.TYPE_INTERFACE);
+		parseSourceFile(workContext, element, SourceFile.TYPE_WORK_CLASS);
+		parseSourceFile(workContext, element, SourceFile.TYPE_TEST_CASE);
 	}
 	
 	private void parseArchContextElement(Element element)
@@ -84,7 +92,7 @@ public class ConfigXMLParser {
 		}  
 	}
 
-	public void parseConfigFile()
+	public void parseArchConfigFile()
 	{
 		SAXReader reader = new SAXReader();
 		try {
@@ -102,7 +110,5 @@ public class ConfigXMLParser {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 	}
 }
