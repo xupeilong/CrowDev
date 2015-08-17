@@ -19,23 +19,12 @@ import org.dom4j.io.XMLWriter;
 
 public class ProjectManager {
 	
-	public void loadWorkProject(File projectPath)
-	{
-		
-	}
-
-	public void loadArchProject(File projectPath)
-	{
-		ConfigXMLParser xmlParser = new ConfigXMLParser(projectPath);
-	}
-	
 	public void makeWorkProject(WorkContext workContext, String destPath)
 	{
 		String projectPath = destPath + File.separator + workContext.getName();
 		String srcPath = projectPath + File.separator + "src";
 		Utils.makeDir(srcPath);
-		SourceFileDAO sourceFileDAO = new SourceFileDAO();
-		List<SourceFile> srcFiles = sourceFileDAO.getSrcFiles(workContext);
+		List<SourceFile> srcFiles = workContext.getSourceFiles();
 		System.out.println("srcFiles count = " + srcFiles.size());
 		for (SourceFile sourceFile: srcFiles)
 		{
@@ -44,6 +33,63 @@ public class ProjectManager {
 		}
 		makeDotProject(workContext.getName(), projectPath + File.separator + ".project");
 		makeDotClasspath(projectPath + File.separator + ".classpath");
+		makeCrowDevConfig(workContext, projectPath + File.separator + "crowdev.xml");
+	}
+	
+	private void makeCrowDevConfig(WorkContext workContext, String destFile)
+	{	
+		String interfaceSrc = null;
+		String classSrc = null;
+		String testCaseSrc = null;
+		
+		int interfaceId = -1;
+		int classId = -1;
+		int testCaseId = -1;
+		for (SourceFile sourceFile: workContext.getSourceFiles())
+		{
+			System.out.println(sourceFile.getType());
+			System.out.println(sourceFile.getSrcPath());
+			if (sourceFile.getType() == SourceFile.TYPE_INTERFACE)
+			{
+				interfaceSrc = sourceFile.getSrcPath();
+				interfaceId = sourceFile.getId();
+			}
+			else if (sourceFile.getType() == SourceFile.TYPE_WORK_CLASS)
+			{
+				classSrc = sourceFile.getSrcPath();
+				classId = sourceFile.getId();
+			}
+			else if (sourceFile.getType() == SourceFile.TYPE_TEST_CASE)
+			{
+				testCaseSrc = sourceFile.getSrcPath();
+				testCaseId = sourceFile.getId();
+			}
+		}
+		
+		Document document = DocumentHelper.createDocument();
+		Element CrowDev = document.addElement("CrowDev");
+		Element WorkContext = CrowDev.addElement("WorkContext");
+		WorkContext.addAttribute("name", workContext.getName());
+		WorkContext.addAttribute("id", String.valueOf(workContext.getId()));
+		Element Interface = WorkContext.addElement("Interface");
+		Interface.addAttribute("src", interfaceSrc);
+		Interface.addAttribute("id", String.valueOf(interfaceId));
+		Element Class = WorkContext.addElement("Class");
+		Class.addAttribute("src", classSrc);
+		Class.addAttribute("id", String.valueOf(classId));
+		Element TestCase = WorkContext.addElement("TestCase");
+		TestCase.addAttribute("src", testCaseSrc);
+		TestCase.addAttribute("id", String.valueOf(testCaseId));
+		
+		XMLWriter output;
+		try {
+			OutputFormat format = OutputFormat.createPrettyPrint();
+	        output = new XMLWriter(new FileWriter(new File(destFile)), format);
+	        output.write(document);
+	        output.close();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	private void makeDotClasspath(String destFile)

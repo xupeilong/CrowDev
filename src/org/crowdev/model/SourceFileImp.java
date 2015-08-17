@@ -17,6 +17,12 @@ public class SourceFileImp {
 	
 	private String imp_file_path;
 	
+	public SourceFileImp(int source_file_id, String imp_file_path) {
+		super();
+		this.source_file_id = source_file_id;
+		this.imp_file_path = imp_file_path;
+	}
+
 	public SourceFileImp() {
 	}
 

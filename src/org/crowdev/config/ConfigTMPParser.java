@@ -15,17 +15,16 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-public class ConfigTMPLoader {
+public class ConfigTMPParser {
 	
 	private String content = "";
 
-	public void loadTMPContent()
+	private void loadTMPContent(String TMPFileName)
 	{
 		BufferedReader in1 = null;  
 		try {
-			in1 = new BufferedReader(new InputStreamReader(ConfigTMPLoader.class.getClassLoader().getResourceAsStream(  
-			                "arch-config-template.xml"), "utf-8"));
-			
+			in1 = new BufferedReader(new InputStreamReader(ConfigTMPParser.class.getClassLoader().getResourceAsStream(  
+					TMPFileName), "utf-8"));
 			String str = null;  
             while ((str = in1.readLine()) != null) {  
                 content = content + str + "\n";
@@ -36,17 +35,31 @@ public class ConfigTMPLoader {
 		}
 	}
 	
-	public void parseTMP()
+	
+	private Target parseTMP(String TMPFileName)
 	{
+		loadTMPContent(TMPFileName);
+		Target target = null;
 		SAXReader reader = new SAXReader();
 		try {
 			Document document = reader.read(new ByteArrayInputStream(content.getBytes()));
 			Element root = document.getRootElement();
-			Context.archConfigTarget = parseTMPElement(root);
+			target = parseTMPElement(root);
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return target;
+	}
+	
+	public Target parseArchTMP()
+	{
+		return parseTMP("arch-config-template.xml");
+	}
+	
+	public Target parseWorkTMP()
+	{
+		return parseTMP("work-config-template.xml");
 	}
 	
 	private Target parseTMPElement(Element element)
@@ -64,7 +77,7 @@ public class ConfigTMPLoader {
 		
 		List<Element> elements = element.elements();
 		for (Element e: elements)
-			target.subTarget.add(parseTMPElement(e));
+			target.childs.add(parseTMPElement(e));
 		
 		return target;
 	}

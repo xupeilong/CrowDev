@@ -1,8 +1,10 @@
-package org.crowdev.config.action;
+package org.crowdev.config.action.arch;
 
 import org.crowdev.DAO.ArchDAO;
+import org.crowdev.config.Context;
 import org.crowdev.config.Target;
 import org.crowdev.config.TargetInstance;
+import org.crowdev.config.action.Action;
 import org.crowdev.model.Arch;
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -10,7 +12,7 @@ import org.dom4j.Element;
 public class ActionArchContext implements Action{
 
 	@Override
-	public void act(TargetInstance targetInstance) {
+	public void actBefore(TargetInstance targetInstance, Context context) {
 		String nameString = targetInstance.getAttrs().get("name");
 		System.out.println("ActionArchContext: " + nameString);
 		
@@ -19,6 +21,7 @@ public class ActionArchContext implements Action{
 		// Persistant Arch
 		ArchDAO dao = new ArchDAO();
 		dao.saveArch(arch);
+		targetInstance.modelObj = arch;
 	}
 
 }

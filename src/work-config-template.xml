@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CorwDev>
+	<WorkContext name="CommentService">
+		<Interface src="org/app/CommentService"
+		id="1">
+		</Interface>
+		<Class src="org/app/CommentServiceImp"
+		id="1">
+		</Class>
+		<TestCase src="org/app/test/CommentServiceTest"
+		id="1">
+		</TestCase>
+	</WorkContext>
+	<Common>
+		<Package>
+		</Package>
+	</Common>
+</CorwDev>

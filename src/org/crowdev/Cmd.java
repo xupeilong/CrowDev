@@ -10,10 +10,37 @@ import java.util.UUID;
 
 import org.crowdev.DAO.WorkContextDAO;
 import org.crowdev.config.ConfigFileParser;
-import org.crowdev.config.ConfigTMPLoader;
+import org.crowdev.config.ConfigTMPParser;
+import org.crowdev.config.Context;
 import org.crowdev.model.WorkContext;
 
 public class Cmd {
+	
+	private static void loadArchProject(String workDirPath)
+	{
+		Context context = Context.archContextFromDir(new File(workDirPath));
+		ConfigFileParser configFileParser = new ConfigFileParser(context);
+		configFileParser.parse();
+	}
+	
+	private static void makeWorkProject(int archId, String workPath)
+	{
+		WorkContextDAO workContextDAO = new WorkContextDAO();
+		List<WorkContext> workContexts = workContextDAO.getWorkContexts(archId);
+		for (WorkContext workContext: workContexts)
+		{
+			System.out.println("WorkContext id = " + workContext.getId());
+			ProjectManager manager = new ProjectManager();
+			manager.makeWorkProject(workContext, workPath);
+		}
+	}
+	
+	private static void loadWorkProject(String workDirPath)
+	{
+		Context context = Context.workContextFromDir(new File(workDirPath));
+		ConfigFileParser configFileParser = new ConfigFileParser(context);
+		configFileParser.parse();
+	}
 
 	public static void main(String[] args)
 	{
@@ -30,41 +57,27 @@ public class Cmd {
 			try {
 				String in = strin.readLine();
 				int i = Integer.parseInt(in);
-				
+				String dirPath = null; 
 				switch (i) {
 				case 1:
 					System.out.println("Input arch dir path:");
-					String archPath = strin.readLine();
-					ProjectManager loader = new ProjectManager();
-					loader.loadArchProject(new File(archPath));
+//					dirPath = strin.readLine();
+					dirPath = "D:\\workspace\\CrowDevTest";
+					loadArchProject(dirPath);
 					break;
 					
 				case 2:
 					System.out.println("Input arch id");
 					int archId = Integer.parseInt(strin.readLine());
 					System.out.println("Input work projects dest dir");
-					String workPath = strin.readLine();
-					WorkContextDAO workContextDAO = new WorkContextDAO();
-					List<WorkContext> workContexts = workContextDAO.getWorkContexts(archId);
-					for (WorkContext workContext: workContexts)
-					{
-						System.out.println("WorkContext id = " + workContext.getId());
-						ProjectManager manager = new ProjectManager();
-						manager.makeWorkProject(workContext, workPath);
-					}
+					dirPath = strin.readLine();
+					makeWorkProject(archId, dirPath);
 					break;
+					
 				case 3:
 					System.out.println("Input class work dir path:");
-//					String workDirPath = strin.readLine();
-					String workDirPath = "F:\\workspace\\CrowDevTest";
-					
-					ConfigTMPLoader configTMPLoader = new ConfigTMPLoader();
-					configTMPLoader.loadTMPContent();
-					configTMPLoader.parseTMP();
-					
-					ConfigFileParser configFileParser = new ConfigFileParser(new File(workDirPath));
-					configFileParser.parse();
-					
+					dirPath = strin.readLine();
+					loadWorkProject(dirPath);
 					break;
 
 				default:

@@ -12,6 +12,9 @@ public class TargetInstance {
 	private Target target;
 	private Map<String, String> attrs = new HashMap<>();
 	private TargetInstance parent;
+	private List<TargetInstance> childs;
+	
+	public Object modelObj;
 	
 	
 	// No public default 

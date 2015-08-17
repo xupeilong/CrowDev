@@ -16,24 +16,22 @@ import org.dom4j.io.SAXReader;
 
 public class ConfigFileParser {
 	
-	private File projectPath;
+	private Context context;
 	private File configFile;
 	private Arch arch;
 	private List<WorkContext> workContexts = new ArrayList<>();
-	private ProjectScanner scanner;
 
-	public ConfigFileParser(File projectPath) {
-		this.projectPath = projectPath;
-		scanner = new ProjectScanner(projectPath);
-		configFile = scanner.getConfigFile();
+	public ConfigFileParser(Context context) {
+		this.context = context;
+		configFile = context.scanner.getConfigFile();
 	}
 	
 	private void parseWithTarget(Element element, Target target, TargetInstance parent)
 	{
 		TargetInstance targetInstance = TargetInstance.fromTarget(target, element, parent);
-		Action action = Context.actionSet.get(targetInstance.getName());
+		Action action = context.actionSet.get(targetInstance.getName());
 		if (action != null)
-			action.act(targetInstance);
+			action.actBefore(targetInstance, context);
 		
 		List<Element> elements = element.elements();
 		for (Element e: elements)
@@ -41,6 +39,9 @@ public class ConfigFileParser {
 			Target subTarget = target.findSubTarget(e.getName());
 			parseWithTarget(e, subTarget, targetInstance);
 		}
+		
+		if (action != null)
+			action.actAfter(targetInstance, context);
 	}
 	
 	public void parse()
@@ -49,7 +50,7 @@ public class ConfigFileParser {
 		try {
 			Document document = reader.read(configFile);
 			Element root = document.getRootElement();
-			parseWithTarget(root, Context.archConfigTarget, null);
+			parseWithTarget(root, context.archConfigTarget, null);
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
