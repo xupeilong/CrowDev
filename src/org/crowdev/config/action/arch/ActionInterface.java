@@ -17,6 +17,12 @@ public class ActionInterface implements Action{
 		
 		ActionUtils.persistantSourceFile(targetInstance, context, SourceFile.TYPE_INTERFACE);
 	}
+
+	@Override
+	public void actAfter(TargetInstance targetInstance, Context context) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 

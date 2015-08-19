@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.crowdev.DAO.SourceFileDAO;
+import org.crowdev.model.Arch;
 import org.crowdev.model.SourceFile;
+import org.crowdev.model.SourceFileImp;
 import org.crowdev.model.WorkContext;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -19,21 +21,39 @@ import org.dom4j.io.XMLWriter;
 
 public class ProjectManager {
 	
-	public void makeWorkProject(WorkContext workContext, String destPath)
+	public void makeWorkProject(WorkContext workContext, String destPath, SourcePlan sourcePlan)
 	{
-		String projectPath = destPath + File.separator + workContext.getName();
+		String projectPath = destPath;
 		String srcPath = projectPath + File.separator + "src";
 		Utils.makeDir(srcPath);
 		List<SourceFile> srcFiles = workContext.getSourceFiles();
 		System.out.println("srcFiles count = " + srcFiles.size());
 		for (SourceFile sourceFile: srcFiles)
 		{
-			Utils.fileCopy(new File(sourceFile.getFilePath()),
+			String sourcePath = sourceFile.getFilePath();
+			if (sourcePath != null)
+			{
+				SourceFileImp sourceFileImp = sourcePlan.getPlan().get(sourceFile);
+				if (sourceFileImp != null)
+					sourcePath = sourceFileImp.getImp_file_path();
+			}
+			Utils.fileCopy(new File(sourcePath),
 					new File(Utils.srcPathToFilePath(srcPath, sourceFile.getSrcPath())));
 		}
 		makeDotProject(workContext.getName(), projectPath + File.separator + ".project");
 		makeDotClasspath(projectPath + File.separator + ".classpath");
 		makeCrowDevConfig(workContext, projectPath + File.separator + "crowdev.xml");
+	}
+	
+	public void makeFinalProject(Arch arch, String destPath)
+	{
+		List<WorkContext> workContexts = arch.getWorkContexts();
+		for (WorkContext workContext: workContexts)
+		{
+			// default
+			SourcePlan sourcePlan = SourcePlan.defaultPlan(workContext);
+			makeWorkProject(workContext, destPath + File.separator + arch.getName(), sourcePlan);
+		}
 	}
 	
 	private void makeCrowDevConfig(WorkContext workContext, String destFile)

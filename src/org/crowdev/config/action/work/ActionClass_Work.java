@@ -15,4 +15,10 @@ public class ActionClass_Work implements Action{
 		ActionUtils.persistantSourceFileImp(targetInstance, context, SourceFile.TYPE_WORK_CLASS);
 	}
 
+	@Override
+	public void actAfter(TargetInstance targetInstance, Context context) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

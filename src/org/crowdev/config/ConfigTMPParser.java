@@ -73,11 +73,11 @@ public class ConfigTMPParser {
 		
 		List<Attribute> attributes = element.attributes();
 		for (Attribute a: attributes)
-			target.attrs.add(a.getName());
+			target.addAttr(a.getName());
 		
 		List<Element> elements = element.elements();
 		for (Element e: elements)
-			target.childs.add(parseTMPElement(e));
+			target.addChild(parseTMPElement(e));
 		
 		return target;
 	}

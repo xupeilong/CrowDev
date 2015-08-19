@@ -16,4 +16,10 @@ public class ActionWorkContext_Work implements Action{
 		System.out.println("WorkContext_Work: " + nameString);
 	}
 
+	@Override
+	public void actAfter(TargetInstance targetInstance, Context context) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

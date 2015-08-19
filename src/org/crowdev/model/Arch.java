@@ -1,9 +1,14 @@
 package org.crowdev.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.crowdev.DAO.WorkContextDAO;
 
 @Entity
 @Table(name = "arch")
@@ -15,6 +20,9 @@ public class Arch {
 	
 	private String name;
 	
+	@Transient
+	private List<WorkContext> workContexts = null;
+	
 	public Arch() {
 	}
 	
@@ -23,7 +31,15 @@ public class Arch {
 		this.name = name;
 	}
 	
-	
+	public List<WorkContext> getWorkContexts()
+	{
+		if (workContexts == null)
+		{
+			WorkContextDAO workContextDAO = new WorkContextDAO();
+			workContexts = workContextDAO.getWorkContexts(id);
+		}
+		return workContexts;
+	}
 	
 	public int getId() {
 		return id;

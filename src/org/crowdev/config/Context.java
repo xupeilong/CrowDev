@@ -13,6 +13,7 @@ import org.crowdev.config.action.arch.ActionTestCase;
 import org.crowdev.config.action.arch.ActionWorkContext;
 import org.crowdev.config.action.work.ActionClass_Work;
 import org.crowdev.config.action.work.ActionWorkContext_Work;
+import org.crowdev.model.WorkContext;
 
 public class Context {
 

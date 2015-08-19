@@ -14,4 +14,10 @@ public class ActionTestCase implements Action{
 		ActionUtils.persistantSourceFile(targetInstance, context, SourceFile.TYPE_TEST_CASE);
 	}
 
+	@Override
+	public void actAfter(TargetInstance targetInstance, Context context) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

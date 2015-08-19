@@ -1,5 +1,6 @@
 package org.crowdev.config;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ public class TargetInstance {
 	private Target target;
 	private Map<String, String> attrs = new HashMap<>();
 	private TargetInstance parent;
-	private List<TargetInstance> childs;
+	private List<TargetInstance> childs = new ArrayList<>();
 	
 	public Object modelObj;
 	
@@ -25,7 +26,7 @@ public class TargetInstance {
 	{
 		TargetInstance targetInstance = new TargetInstance();
 		targetInstance.target = target;
-		for (String name: target.attrs)
+		for (String name: target.getAttrs())
 		{
 			String value = "";
 			Attribute attr = element.attribute(name);
@@ -34,12 +35,14 @@ public class TargetInstance {
 			targetInstance.attrs.put(name, value);
 		}
 		targetInstance.parent = parent;
+		if (parent != null)
+			parent.childs.add(targetInstance);
 		return targetInstance;
 	}
 	
 	public String getName()
 	{
-		return target.name;
+		return target.getName();
 	}
 
 	public TargetInstance getParent() {

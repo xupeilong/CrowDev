@@ -8,10 +8,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
+import org.crowdev.DAO.ArchDAO;
 import org.crowdev.DAO.WorkContextDAO;
 import org.crowdev.config.ConfigFileParser;
 import org.crowdev.config.ConfigTMPParser;
 import org.crowdev.config.Context;
+import org.crowdev.model.Arch;
 import org.crowdev.model.WorkContext;
 
 public class Cmd {
@@ -31,7 +33,7 @@ public class Cmd {
 		{
 			System.out.println("WorkContext id = " + workContext.getId());
 			ProjectManager manager = new ProjectManager();
-			manager.makeWorkProject(workContext, workPath);
+			manager.makeWorkProject(workContext, workPath + File.separator + workContext.getName(), null);
 		}
 	}
 	
@@ -40,6 +42,14 @@ public class Cmd {
 		Context context = Context.workContextFromDir(new File(workDirPath));
 		ConfigFileParser configFileParser = new ConfigFileParser(context);
 		configFileParser.parse();
+	}
+	
+	private static void makeFinalProject(int archId, String workPath)
+	{
+		ArchDAO archDAO = new ArchDAO();
+		Arch arch = archDAO.getArch(archId);
+		ProjectManager manager = new ProjectManager();
+		manager.makeFinalProject(arch, workPath);
 	}
 
 	public static void main(String[] args)
@@ -53,6 +63,7 @@ public class Cmd {
 			System.out.println("1 = Load Arch Project");
 			System.out.println("2 = Make Work Project");
 			System.out.println("3 = Load Work Project");
+			System.out.println("4 = Output Final Project");
 			System.out.println("Input command number: ");
 			try {
 				String in = strin.readLine();
@@ -78,6 +89,14 @@ public class Cmd {
 					System.out.println("Input class work dir path:");
 					dirPath = strin.readLine();
 					loadWorkProject(dirPath);
+					break;
+					
+				case 4:
+					System.out.println("Input arch id");
+					int id = Integer.parseInt(strin.readLine());
+					System.out.println("Input work projects dest dir");
+					dirPath = strin.readLine();
+					makeFinalProject(id, dirPath);
 					break;
 
 				default:

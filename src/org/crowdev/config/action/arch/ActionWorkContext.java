@@ -23,4 +23,10 @@ public class ActionWorkContext implements Action{
 		targetInstance.modelObj = workContext;
 	}
 
+	@Override
+	public void actAfter(TargetInstance targetInstance, Context context) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

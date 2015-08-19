@@ -28,6 +28,11 @@ public class Target {
 		childs.add(target);
 		target.parent = this;
 	}
+	
+	public void addAttr(String attrName)
+	{
+		attrs.add(attrName);
+	}
 
 	public String getName() {
 		return name;

@@ -24,4 +24,10 @@ public class ActionArchContext implements Action{
 		targetInstance.modelObj = arch;
 	}
 
+	@Override
+	public void actAfter(TargetInstance targetInstance, Context context) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
